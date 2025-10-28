@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freshman Motivation Explorer</title>
+    <style>
+        /* Basic CSS for a clean look */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+        .question-group {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .ranking-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .ranking-option, .likert-option, .paired-option {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        input[type="number"], input[type="radio"] {
+            margin-right: 10px;
+        }
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 40px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #0056b3;
+            border-radius: 8px;
+            background-color: #e9f7ff;
+            text-align: center;
+            display: none; /* Hide until calculated */
+        }
+        #dominantStyle {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #0056b3;
+            margin-top: 10px;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .result-table th, .result-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .result-table th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>⭐ The Freshman Motivation Explorer</h1>
+    <p style="text-align: center; font-style: italic;">Welcome, 9th Grader! Discover what types of rewards and recognition drive you to succeed.</p>
+
+    <form id="motivationInventoryForm">
+        
+        <h2>Part 1: Recognition and Reward Preferences</h2>
+        <p>Instructions: For each scenario, rank the options from **1 (Most Preferred)** to **4 (Least Preferred)**. Use each number only once.</p>
+
+        <div class="question-group">
+            <p class="ranking-label">1. You finish a major project. How would you prefer to be recognized?</p>
+            <div class="ranking-option">
+                <input type="number" name="q1_rank_public" min="1" max="4" required>
+                <span>**Public Recognition:** A school-wide announcement or certificate (Recognizer)</span>
+            </div>
+            <div class="ranking-option">
+                <input type="number" name="q1_rank_private" min="1" max="4" required>
+                <span>**Increased Privilege:** Being assigned a leadership role or responsibility (Controller)</span>
+            </div>
+            <div class="ranking-option">
+                <input type="number" name="q1_rank_tangible" min="1" max="4" required>
+                <span>**Tangible Reward:** A physical prize or item (e.g., gift card, homework pass) (Taker)</span>
+            </div>
+            <div class="ranking-option">
+                <input type="number" name="q1_rank_future" min="1" max="4" required>
+                <span>**Future Goal Boost:** A note about how this will look on your college application (Futurist)</span>
+            </div>
+        </div>
+
+        <div class="question-group">
+            <p class="ranking-label">2. When you achieve a top score, what aspect of the success is most motivating?</p>
+            <div class="ranking-option">
+                <input type="number" name="q2_rank_public" min="1" max="4" required>
+                <span>**Competition:** The competitive feeling of being ranked highest among peers (Recognizer)</span>
+            </div>
+            <div class="ranking-option">
+                <input type="number" name="q2_rank_private" min="1" max="4" required>
+                <span>**Control/Say:** The ability to influence the next assignment or activity (Controller)</span>
+            </div>
+            <div class="ranking-option">
+                <input type="number" name="q2_rank_tangible" min="1" max="4" required>
+                <span>**Immediate Reward:** A small, immediate treat or reward from the teacher (Taker)</span>
+            </div>
+            <div class="ranking-option">
+                <input type="number" name="q2_rank_future" min="1" max="4" required>
+                <span>**External Reporting:** The positive news shared directly with your parents/guardians (Futurist)</span>
+            </div>
+        </div>
+
+        <h2>Part 2: Structure and Accountability</h2>
+        <p>Instructions: Rate how much this external factor motivates you to work hard on a scale of **1 (Not at all)** to **5 (Extremely)**.</p>
+
+        <div class="question-group">
+            <p class="ranking-label">3. Strict deadlines and clear penalties for lateness.</p>
+            <div class="likert-option">
+                <input type="radio" name="q3_likert" value="1" required> 1
+                <input type="radio" name="q3_likert" value="2"> 2
+                <input type="radio" name="q3_likert" value="3"> 3
+                <input type="radio" name="q3_likert" value="4"> 4
+                <input type="radio" name="q3_likert" value="5"> 5
+            </div>
+
+            <p class="ranking-label">4. Competition with other students to see who gets the highest grade or rank. (Recognizer)</p>
+            <div class="likert-option">
+                <input type="radio" name="q4_likert" value="1" required> 1
+                <input type="radio" name="q4_likert" value="2"> 2
+                <input type="radio" name="q4_likert" value="3"> 3
+                <input type="radio" name="q4_likert" value="4"> 4
+                <input type="radio" name="q4_likert" value="5"> 5
+            </div>
+
+            <p class="ranking-label">5. External focus on how my performance looks for college applications. (Futurist)</p>
+            <div class="likert-option">
+                <input type="radio" name="q5_likert" value="1" required> 1
+                <input type="radio" name="q5_likert" value="2"> 2
+                <input type="radio" name="q5_likert" value="3"> 3
+                <input type="radio" name="q5_likert" value="4"> 4
+                <input type="radio" name="q5_likert" value="5"> 5
+            </div>
+
+            <p class="ranking-label">6. Earning a specific reward like a field trip or class party. (Taker)</p>
+            <div class="likert-option">
+                <input type="radio" name="q6_likert" value="1" required> 1
+                <input type="radio" name="q6_likert" value="2"> 2
+                <input type="radio" name="q6_likert" value="3"> 3
+                <input type="radio" name="q6_likert" value="4"> 4
+                <input type="radio" name="q6_likert" value="5"> 5
+            </div>
+        </div>
+        
+        <h2>Part 3: Paired Incentives</h2>
+        <p>Instructions: In each pair, check the one incentive that you find **most motivating**.</p>
+        
+        <div class="question-group">
+            <p class="ranking-label">7. MOST MOTIVATING:</p>
+            <div class="paired-option">
+                <input type="radio" name="q7_paired" value="recognizer" required> <span>**Public recognition** (being called out as a star student)</span>
+            </div>
+            <div class="paired-option">
+                <input type="radio" name="q7_paired" value="taker"> <span>**Private reward** (getting extra credit points)</span>
+            </div>
+            <p class="ranking-label">8. MOST MOTIVATING:</p>
+            <div class="paired-option">
+                <input type="radio" name="q8_paired" value="controller" required> <span>**Earning power/control** (getting to pick the next book for the class)</span>
+            </div>
+            <div class="paired-option">
+                <input type="radio" name="q8_paired" value="taker"> <span>**Earning tangible rewards** (winning a t-shirt or prize)</span>
+            </div>
+            <p class="ranking-label">9. MOST MOTIVATING:</p>
+            <div class="paired-option">
+                <input type="radio" name="q9_paired" value="futurist" required> <span>**Future orientation** (being told how this success will look on a college application)</span>
+            </div>
+            <div class="paired-option">
+                <input type="radio" name="q9_paired" value="taker"> <span>**Immediate gratification** (getting out of homework for one night)</span>
+            </div>
+        </div>
+
+        <button type="submit">Discover My Motivation Style</button>
+    </form>
+
+    <div id="results">
+        <h2>Your Motivation Profile</h2>
+        <p>Based on your answers, your Primary Motivation Style is:</p>
+        <div id="dominantStyle"></div>
+        
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>Style</th>
+                    <th>Description & Focus</th>
+                    <th>Actionable Tip</th>
+                </tr>
+            </thead>
+            <tbody id="resultDetails">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.getElementById('motivationInventoryForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Stop the form from submitting normally
+        calculateResults();
+    });
+
+    function calculateResults() {
+        let scores = {
+            'Recognizer': 0, // Public praise, competition, status
+            'Controller': 0, // Autonomy, choice, leadership
+            'Taker': 0,      // Immediate rewards, tangibles, treats
+            'Futurist': 0    // Long-term goals, college, parental approval
+        };
+
+        const form = document.getElementById('motivationInventoryForm');
+
+        // --- SCORING LOGIC: PART 1 (Ranking) ---
+        // Ranking: 1 = +4 points, 2 = +3, 3 = +2, 4 = +1
+        // Q1: Recognizer (Public), Controller (Privilege), Taker (Tangible), Futurist (Future)
+        scores['Recognizer'] += (5 - parseInt(form.elements.q1_rank_public.value));
+        scores['Controller'] += (5 - parseInt(form.elements.q1_rank_private.value));
+        scores['Taker'] += (5 - parseInt(form.elements.q1_rank_tangible.value));
+        scores['Futurist'] += (5 - parseInt(form.elements.q1_rank_future.value));
+
+        // Q2: Recognizer (Competition), Controller (Control), Taker (Immediate), Futurist (Reporting)
+        scores['Recognizer'] += (5 - parseInt(form.elements.q2_rank_public.value));
+        scores['Controller'] += (5 - parseInt(form.elements.q2_rank_private.value));
+        scores['Taker'] += (5 - parseInt(form.elements.q2_rank_tangible.value));
+        scores['Futurist'] += (5 - parseInt(form.elements.q2_rank_future.value));
+
+        // --- SCORING LOGIC: PART 2 (Likert Scale) ---
+        // Q4 (Competition) adds directly to Recognizer
+        scores['Recognizer'] += parseInt(form.elements.q4_likert.value);
+        // Q5 (College/Future) adds directly to Futurist
+        scores['Futurist'] += parseInt(form.elements.q5_likert.value);
+        // Q6 (Tangible Reward) adds directly to Taker
+        scores['Taker'] += parseInt(form.elements.q6_likert.value);
+        // Note: Q3 (Strict Deadlines) is a general accountability measure and is not tied to a single preference.
+
+        // --- SCORING LOGIC: PART 3 (Paired Incentives) ---
+        // Q7: Recognizer vs. Taker (+5 points for choice)
+        if (form.elements.q7_paired.value === 'recognizer') scores['Recognizer'] += 5;
+        else scores['Taker'] += 5;
+
+        // Q8: Controller vs. Taker (+5 points for choice)
+        if (form.elements.q8_paired.value === 'controller') scores['Controller'] += 5;
+        else scores['Taker'] += 5;
+
+        // Q9: Futurist vs. Taker (+5 points for choice)
+        if (form.elements.q9_paired.value === 'futurist') scores['Futurist'] += 5;
+        else scores['Taker'] += 5;
+        
+
+        // --- DETERMINE DOMINANT STYLE ---
+        let dominantStyle = 'N/A';
+        let maxScore = -1;
+
+        for (const style in scores) {
+            if (scores[style] > maxScore) {
+                maxScore = scores[style];
+                dominantStyle = style;
+            }
+        }
+
+        // --- DISPLAY RESULTS ---
+        const resultDescriptions = {
+            'Recognizer': {
+                description: 'You thrive on public praise, competition, and status. Being recognized in front of peers or receiving public awards is highly motivating.',
+                tip: 'Ask teachers about Honor Rolls, "Student of the Month," or competitive class activities where you can excel publicly.'
+            },
+            'Controller': {
+                description: 'You are driven by autonomy, choice, and responsibility. Having a voice in decisions and being a leader keeps you engaged.',
+                tip: 'Volunteer to lead projects, ask for opportunities to choose your assignment format, or join a club leadership board.'
+            },
+            'Taker': {
+                description: 'You are motivated by immediate, tangible rewards and incentives. Homework passes, prizes, treats, or extra credit points are strong drivers.',
+                tip: 'Set up a small, personal reward system: "If I finish this essay, I get a small reward/break."'
+            },
+            'Futurist': {
+                description: 'Your primary drive is long-term success, like college admission, career prospects, and earning strong parental approval.',
+                tip: 'Continuously connect your current school work to your long-term goals and resume-building activities.'
+            }
+        };
+        
+        // Populate the results section
+        document.getElementById('dominantStyle').innerText = dominantStyle;
+        
+        const detailsContainer = document.getElementById('resultDetails');
+        detailsContainer.innerHTML = '';
+        
+        for (const style in resultDescriptions) {
+            const data = resultDescriptions[style];
+            const isDominant = (style === dominantStyle) ? 'style="font-weight: bold; background-color: #d1ecf1;"' : '';
+            
+            detailsContainer.innerHTML += `
+                <tr ${isDominant}>
+                    <td>${style}</td>
+                    <td>${data.description}</td>
+                    <td>${data.tip}</td>
+                </tr>
+            `;
+        }
+
+        // Show the results section
+        document.getElementById('results').style.display = 'block';
+        
+        // Scroll to results
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
